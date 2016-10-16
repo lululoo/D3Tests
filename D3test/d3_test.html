@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<!--Testing bunch of random stuff w/ d3-->
+<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -52,6 +53,7 @@
 </head>
 <body>
     <script>
+        //setup for d3.geo
         var width = 960,
             height = 500;
 
@@ -66,26 +68,17 @@
         var path = d3.geo.path()
             .projection(projection);
 
-        //var graticule = d3.geo.graticule()
-        //    .extent([[-98 - 45, 38 - 45], [-98 + 45, 38 + 45]])
-        //    .step([5, 5]);
-
         var svg = d3.select("body").append("svg")
             .attr("width", width)
             .attr("height", height)            
 
-        //svg.append("path")
-        //    .datum(graticule)
-        //    .attr("class", "graticule")
-        //    .attr("d", path);
-        usa = null;
-        id = 0;
-
-
+        //state lines, and county lines
+        //onMouseOver/Out
+        //onClick for dialog box with elem id        
         d3.json("/data/us.json", function (error, us) {
             if (error) throw error;
-            usa = us;
 
+            //county lines
             svg.selectAll("counties")
                 .data(topojson.feature(us, us.objects.counties).features)
                 .enter().insert("path")
@@ -108,12 +101,14 @@
                     console.log(d3.mouse(this))
                 });
 
+            //state lines
             svg.insert("path")
                 .datum(topojson.mesh(us, us.objects.states, function (a, b) { return a !== b; }))
                 .attr("class", "state-boundary")
                 .attr("d", path)
         });
 
+        //Place down small circles for some random coordinates.
         d3.csv("/data/randCoords.csv", function (data) {
             var svg2 = d3.select("body").append("svg")
                 .attr("width", width)
@@ -121,7 +116,7 @@
                 .style("position", "absolute")
                 .style("top", 0)
                 .style("left", 0)
-                .style("pointer-events", "none")
+                .style("pointer-events", "none")    //do this so that the mouse hover works for the svg element below
 
 
             svg2.selectAll("circle")
